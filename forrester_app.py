@@ -46,7 +46,9 @@ if st.session_state.messages[-1]["role"] != "assistant":
         response = ""
         resp_container = st.empty()
         for delta in openai.ChatCompletion.create(
-            model="gpt-4-1106-preview",
+            model="gpt-3.5-turbo-1106",
+            #change model type from original to 3.5
+            #model="gpt-4-1106-preview",
             messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
             stream=True,
             temperature=.5
