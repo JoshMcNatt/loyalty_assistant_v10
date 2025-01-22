@@ -10,8 +10,8 @@ import re
 import streamlit as st
 from forester_prompt_v09 import get_system_prompt
 
-#st.sidebar.image('Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
-st.sidebar.image('Kobie_Alchemy_Loyalty_Cloud.png', use_container_width=True)
+st.sidebar.image('Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
+#st.sidebar.image('Kobie_Alchemy_Loyalty_Cloud.png', use_container_width=True)
 
 st.sidebar.header("Specifications")
 st.sidebar.markdown(
