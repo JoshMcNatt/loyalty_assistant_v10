@@ -16,15 +16,16 @@ from cryptography.hazmat.primitives import serialization
 # Decode the base64-encoded private key
 private_key_der = base64.b64decode(st.secrets["connections"]["snowpark"]["private_key"])
 
-# Load the private key
+# Load the private key (DER format)
 p_key = serialization.load_der_private_key(
     private_key_der,
     password=None,
     backend=default_backend()
 )
 
-pkb = p_key.private_bytes(
-    encoding=serialization.Encoding.DER,
+# Convert to PEM format (required by Snowflake)
+private_key_pem = p_key.private_bytes(
+    encoding=serialization.Encoding.PEM,
     format=serialization.PrivateFormat.PKCS8,
     encryption_algorithm=serialization.NoEncryption()
 )
