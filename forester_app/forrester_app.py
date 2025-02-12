@@ -18,7 +18,7 @@ st.sidebar.markdown(
 ##    "This application uses OpenAI's GPT-4 to generate marketing campaign ideas and insights based on client-specific customer segmentations, ML-driven recommendations, and other attributes."
 """
 Model: OpenAI's GPT-4   
-Vertical: Retail  
+Vertical: Travel & Hospitality  
 """)
 
 # Initialize the chat messages history
