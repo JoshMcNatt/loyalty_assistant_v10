@@ -8,27 +8,6 @@ Created on Wed Aug 23 10:41:25 2023
 import openai
 import re
 import streamlit as st
-import base64
-from forester_prompt_v09 import get_system_prompt
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-
-# Decode the base64-encoded private key
-private_key_der = base64.b64decode(st.secrets["connections"]["snowpark"]["private_key"])
-
-# Load the private key (DER format)
-p_key = serialization.load_der_private_key(
-    private_key_der,
-    password=None,
-    backend=default_backend()
-)
-
-# ✅ Convert to DER format (Raw bytes, no PEM headers)
-private_key_der_bytes = p_key.private_bytes(
-    encoding=serialization.Encoding.DER,  
-    format=serialization.PrivateFormat.PKCS8,  
-    encryption_algorithm=serialization.NoEncryption()
-)
 
 
 st.sidebar.image('forester_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
@@ -82,7 +61,8 @@ if st.session_state.messages[-1]["role"] != "assistant":
                 "snowpark",
                 account=st.secrets["connections"]["snowpark"]["account"],
                 user=st.secrets["connections"]["snowpark"]["user"],
-                private_key=private_key_der_bytes,
+                password = st.secrest["connections"]["snowpark"]["password"],
+                #private_key=private_key_der_bytes,
                 role=st.secrets["connections"]["snowpark"]["role"],
                 warehouse=st.secrets["connections"]["snowpark"]["warehouse"],
                 database=st.secrets["connections"]["snowpark"]["database"],
