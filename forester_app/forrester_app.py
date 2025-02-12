@@ -61,7 +61,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
                 "snowpark",
                 account=st.secrets["connections"]["snowpark"]["account"],
                 user=st.secrets["connections"]["snowpark"]["user"],
-                password = st.secrest["connections"]["snowpark"]["password"],
+                password = st.secrets["connections"]["snowpark"]["password"],
                 #private_key=private_key_der_bytes,
                 role=st.secrets["connections"]["snowpark"]["role"],
                 warehouse=st.secrets["connections"]["snowpark"]["warehouse"],
