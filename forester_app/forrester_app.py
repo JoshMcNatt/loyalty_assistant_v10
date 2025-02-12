@@ -23,12 +23,13 @@ p_key = serialization.load_der_private_key(
     backend=default_backend()
 )
 
-# Convert to PEM format (required by Snowflake)
-private_key_pem = p_key.private_bytes(
-    encoding=serialization.Encoding.PEM,
-    format=serialization.PrivateFormat.PKCS8,
+# ✅ Convert to DER format (Raw bytes, no PEM headers)
+private_key_der_bytes = p_key.private_bytes(
+    encoding=serialization.Encoding.DER,  
+    format=serialization.PrivateFormat.PKCS8,  
     encryption_algorithm=serialization.NoEncryption()
 )
+
 
 st.sidebar.image('forester_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
 #st.sidebar.image('Kobie_Alchemy_Loyalty_Cloud.png', use_container_width=True)
