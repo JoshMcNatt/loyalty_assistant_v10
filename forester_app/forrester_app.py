@@ -8,7 +8,12 @@ Created on Wed Aug 23 10:41:25 2023
 import openai
 import re
 import streamlit as st
+import base64
 from forester_prompt_v09 import get_system_prompt
+
+# Decode the base64-encoded private key
+private_key_der = base64.b64decode(st.secrets["connections"]["snowpark"]["private_key"])
+
 
 st.sidebar.image('forester_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
 #st.sidebar.image('Kobie_Alchemy_Loyalty_Cloud.png', use_container_width=True)
