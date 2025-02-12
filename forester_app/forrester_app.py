@@ -8,6 +8,7 @@ Created on Wed Aug 23 10:41:25 2023
 import openai
 import re
 import streamlit as st
+from forester_prompt_v09 import get_system_prompt
 
 
 st.sidebar.image('forester_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
@@ -61,8 +62,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
                 "snowpark",
                 account=st.secrets["connections"]["snowpark"]["account"],
                 user=st.secrets["connections"]["snowpark"]["user"],
-                password = st.secrets["connections"]["snowpark"]["password"],
-                #private_key=private_key_der_bytes,
+                private_key=private_key_der_bytes,
                 role=st.secrets["connections"]["snowpark"]["role"],
                 warehouse=st.secrets["connections"]["snowpark"]["warehouse"],
                 database=st.secrets["connections"]["snowpark"]["database"],
