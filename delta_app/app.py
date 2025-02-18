@@ -8,9 +8,9 @@ Created on Wed Aug 23 10:41:25 2023
 import openai
 import re
 import streamlit as st
-from forester_prompt_v09 import get_system_prompt
+from delta_prompt import get_system_prompt
 
-st.sidebar.image('/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
+st.sidebar.image('delta_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
 
 
 st.sidebar.header("Specifications")
@@ -18,7 +18,7 @@ st.sidebar.markdown(
 ##    "This application uses OpenAI's GPT-4 to generate marketing campaign ideas and insights based on client-specific customer segmentations, ML-driven recommendations, and other attributes."
 """
 Model: OpenAI's GPT-4   
-Vertical: Retail  
+Vertical: Travel & Hospitality  
 """)
 
 # Initialize the chat messages history
