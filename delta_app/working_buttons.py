@@ -9,6 +9,7 @@ import random
 import string
 import json
 from datetime import datetime, timezone
+import requests
 
 st.sidebar.image('delta_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
 
@@ -116,6 +117,16 @@ def create_bonus_json(start_date, end_date, bonus_code):
     }]
     return bonus_data
 
+def post_to_webhook(data, url):
+    """Post data to a webhook URL"""
+    try:
+        response = requests.post(url, json=data)
+        response.raise_for_status()
+        return True
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error posting to webhook: {e}")
+        return False
+
 def show_download_section(where_clause, export_key, idx):
     """Helper function to show download and bonus sections"""
     # Container for all buttons and forms
@@ -177,7 +188,14 @@ def show_download_section(where_clause, export_key, idx):
                     bonus_data = create_bonus_json(start_date, end_date, bonus_code)
                     bonus_json = json.dumps(bonus_data, indent=2)
                     
-                    st.success("✅ Bonus Configuration Created!")
+                    # Post to webhook
+                    webhook_url = st.secrets.get("WEBHOOK_URL", "")  # Get webhook URL from secrets
+                    if webhook_url:
+                        if post_to_webhook(bonus_data, webhook_url):
+                            st.success("✅ Bonus Configuration Created and Sent!")
+                        else:
+                            st.warning("⚠️ Bonus Configuration Created but Failed to Send")
+                    
                     st.download_button(
                         label="📥 Download Bonus Configuration",
                         data=bonus_json,
