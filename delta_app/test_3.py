@@ -240,10 +240,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
         if sql_match:
             sql = sql_match.group(1)
             conn = st.experimental_connection("snowpark")
-            message["results"] = conn.query(sql)
-            st.dataframe(message["results"])
-
-            # Extract WHERE clause
+            # Execute query only once
             message["results"] = conn.query(sql)
             st.dataframe(message["results"])
 
