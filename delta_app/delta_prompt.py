@@ -76,29 +76,29 @@ The only table you should use is KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG.
 <columns>
 
 If you are asked what KLICs are available, you should always return the list of KLICs from the table KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG. Rememeber, do not return any other table or hallucinate any other tables.
-"ACTIVATE_ENROLL": Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations.
-"ACTIVATE_MEANINGFUL": Activate Meaningful specifically focuses on members who need additional push to get a second loyalty transaction.
-"TIER_ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year.
-"TIER_DOWNGRADE": Tier Downgrade identifies members with status who are likely not miss the threshold to maintain tier status.
-"REDEMPTION_SPEND": Redemption Spend is for members who have enough points to redeem, but have not done recently.
-"REDEMPTION_INSP": Redemption Inspiration is for high spending members who have slowed their redemption behavior relative to previous redemption trends.
+"ACTIVATE ENROLL": Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations.
+"ACTIVATE MEANINGFUL": Activate Meaningful specifically focuses on members who need additional push to get a second loyalty transaction.
+"TIER ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year.
+"TIER DOWNGRADE": Tier Downgrade identifies members with status who are likely not miss the threshold to maintain tier status.
+"REDEMPTION SPEND": Redemption Spend is for members who have enough points to redeem, but have not done recently.
+"REDEMPTION INSP": Redemption Inspiration is for high spending members who have slowed their redemption behavior relative to previous redemption trends.
 "CHURN": Churn focuses on members who are churning in their engagement from the program. i.e. they are no longer purchasing or interacting
 "WINBACK": Winback focuses on members who have fully lapesed from the program.  i.e. are no longer purchase active with the program.
-"VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them.
-"NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged.
-"VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days.
-"SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer.
+"VIP APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them.
+"NON REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged.
+"VIP ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days.
+"SPECIAL OFFER": Members who's purchase behavior makes them eligible for a special offer.
 "GAME": The Game KLIC helps identify members who engage digitally and would be good candidates for a game
 "ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection.
-"ENROLLMENT_SOURCE": data type string that represents what platform a member used to enroll
-"NEXT_BEST_OFFER": The next best offer from the offer catalog that maximizes program engagement.
+"ENROLLMENT SOURCE": data type string that represents what platform a member used to enroll
+"NEXT BEST OFFER": The next best offer from the offer catalog that maximizes program engagement.
 "CUSTOMER COUNTRY": refers to the country that the customer is in. for example a value of united states represents that the customer is from the united states.
 "DAYS SINCE LAST TRANSACTION": a fixed data type int that represents if number of days since a customers last transaction. for example, 5 would represent 5 days since the customers last transaction
 
 IF you are asked to generate an audience for a KLIC you should return a summary from the table for each one with additional KPIs. Example query below:
-SELECT NEXT_BEST_OFFER, CHURN, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT, AVG("LIFETIME SALES") AS AVERAGE_LIFETIME_SALES, AVG("LIFETIME TRANSACTIONS") AS AVERAGE_LIFETIME_TRANSACTIONS, AVG(ACCOUNT_BALANCE) AS AVERAGE_ACCOUNT_BALANCE, AVG("DAYS SINCE LAST TRANSACTION") AS AVERAGE_DAYS_SINCE_LAST_TRANSACTION, AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE)) AS AVERAGE_TENURE_DAYS
+SELECT NEXT_BEST_OFFER, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT, AVG("LIFETIME SALES") AS "AVERAGE LIFETIME SALES", AVG("LIFETIME TRANSACTIONS") AS "AVERAGE LIFETIME TRANSACTIONS", AVG(ACCOUNT_BALANCE) AS "AVERAGE ACCOUNT BALANCE", AVG("DAYS SINCE LAST TRANSACTION") AS "AVERAGE DAYS SINCE LAST TRANSACTION", AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE)) AS "AVERAGE TENURE DAYS"
 FROM KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG
-GROUP BY NEXT_BEST_OFFER, CHURN;
+GROUP BY NEXT_BEST_OFFER
 
 When generating me an audience always return the KPIs below, in addition to the NEXT_BEST_OFFER and the count of customers in the audience.
 <KPIS>
