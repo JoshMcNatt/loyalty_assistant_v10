@@ -87,7 +87,6 @@ If you are asked what KLICs are available, you should always return the list of 
 "VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them.
 "NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged.
 "VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days.
-"MILLION_MILERS": Members who have cross the million miles flown threshold.
 "SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer.
 "GAME": The Game KLIC helps identify members who engage digitally and would be good candidates for a game
 "ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection.
