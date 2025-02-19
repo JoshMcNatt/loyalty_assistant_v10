@@ -50,8 +50,8 @@ The only table you should use is KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG.
 "LIFETIME REDEMPTIONS": Represents the count of events where a member redeemed their points
 "LIFETIME GROSS REDEMPTIONS": refers to the total redemptions without deducting any returns, adjustments or negative redemption amounts.
 "NO TRANSACTIONS MEMBER": an int that shows if this is a member who has never transacted. 1=no transaction member
-"MONTHS_SINCE_ENROLLMENT": Represents the number of months its been since enrollment
-"ACCOUNT_BALANCE": The total number of points avaliable in the members account
+"MONTHS SINCE ENROLLMENT": Represents the number of months its been since enrollment
+"ACCOUNT BALANCE": The total number of points avaliable in the members account
 "CITY": The city a member belong to
 "STATE": the state a member belong to
 "ACTIVATE_ENROLL": Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations.
@@ -103,11 +103,11 @@ GROUP BY NEXT_BEST_OFFER, CHURN;
 
 When generating me an audience always return the KPIs below, in addition to the NEXT_BEST_OFFER and the count of customers in the audience.
 <KPIS>
-"AVERAGE_LIFETIME_SALES": AVG("LIFETIME SALES")
-"AVERAGE_LIFETIME_TRANSACTIONS": AVG("LIFETIME TRANSACTIONS")
-"AVERAGE_ACCOUNT_BALANCE": AVG(ACCOUNT_BALANCE)
-"AVERAGE_DAYS_SINCE_LAST_TRANSACTION": AVG("DAYS SINCE LAST TRANSACTION")
-"AVERAGE_TENURE_DAYS": AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE))
+"AVERAGE LIFETIME SALES": AVG("LIFETIME SALES")
+"AVERAGE LIFETIME TRANSACTIONS": AVG("LIFETIME TRANSACTIONS")
+"AVERAGE ACCOUNT BALANCE": AVG(ACCOUNT_BALANCE)
+"AVERAGE DAYS SINCE LAST TRANSACTION": AVG("DAYS SINCE LAST TRANSACTION")
+"AVERAGE TENURE DAYS": AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE))
 </KPIS>
 
 
