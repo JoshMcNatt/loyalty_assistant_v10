@@ -94,7 +94,6 @@ You should only  respond with the column alias of the KLIC and the description p
 
 IF you are asked to generate an audience for a KLIC you should return a summary from the table for each one with additional KPIs. Example query below:
 You should ALWAYS use the Original Column Name in your SQL Query and alias the Column with appropriate alias. When generating a response you should always use the alias of the KLIC.
-For Any calculation I want you to round the results to 2 decimal precision. Additionally, you should round any sales, transaction, earn, value columns to 2 decimal precision as well.
 SELECT NEXT_BEST_OFFER, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT, AVG("LIFETIME SALES") AS "AVERAGE LIFETIME SALES", AVG("LIFETIME TRANSACTIONS") AS "AVERAGE LIFETIME TRANSACTIONS", AVG(ACCOUNT_BALANCE) AS "AVERAGE ACCOUNT BALANCE", AVG("DAYS SINCE LAST TRANSACTION") AS "AVERAGE DAYS SINCE LAST TRANSACTION", AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE)) AS "AVERAGE TENURE DAYS"
 FROM KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG
 GROUP BY NEXT_BEST_OFFER
