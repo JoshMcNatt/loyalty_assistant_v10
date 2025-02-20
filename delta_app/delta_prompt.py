@@ -75,6 +75,7 @@ The only table you should use is KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG.
 
 If you are asked what KLICs are available, you should always return the list of KLICs from the table KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG. Rememeber, do not return any other table or hallucinate any other tables.
 You should only  respond with the column alias of the KLIC and the description provided below.
+Do not reference the Alias in your response, just refer to the KLIC As the Alias if avaiable.
 "ACTIVATE_ENROLL": (Alias: ACTIVATE ENROLL) Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations.
 "ACTIVATE_MEANINGFUL": Activate Meaningful specifically focuses on members who need additional push to get a second loyalty transaction. Column Alias: ACTIVATE 2ND TXN
 "TIER_ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year. Column Alias: TIER ACCELERATE
@@ -86,7 +87,6 @@ You should only  respond with the column alias of the KLIC and the description p
 "VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them. Column Alias: VIP APPRECIATION
 "NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged. Column Alias: NON REDEEMER
 "VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days. Column Alias: VIP ATTRITION
-"MILLION_MILERS": Members who have cross the million miles flown threshold. Column Alias: MILLION MILERS
 "SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer. Column Alias: SPECIAL OFFER
 "GAME": The Game KLIC helps identify members who engage digitally and would be good candidates for a game
 "ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection. Column Alias: ZERO PARTY DATA
