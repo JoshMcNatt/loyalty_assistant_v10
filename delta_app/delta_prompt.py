@@ -42,27 +42,27 @@ The only table you should use is KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG.
 "LIFETIME REDEMPTIONS": Represents the count of events where a member redeemed their points
 "LIFETIME GROSS REDEMPTIONS": refers to the total redemptions without deducting any returns, adjustments or negative redemption amounts.
 "NO TRANSACTIONS MEMBER": an int that shows if this is a member who has never transacted. 1=no transaction member
-"MONTHS_SINCE_ENROLLMENT": Represents the number of months its been since enrollment Column Alias: MONTHS SINCE ENROLLMENT
-"ACCOUNT_BALANCE": The total number of points avaliable in the members account Column Alias: ACCOUNT BALANCE
+"MONTHS_SINCE_ENROLLMENT": Represents the number of months its been since enrollment 
+"ACCOUNT_BALANCE": The total number of points avaliable in the members account 
 "CITY": The city a member belong to
 "STATE": the state a member belong to
-"ACTIVATE_ENROLL": Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations. Column Alias: ACTIVATE ENROLL
-"ACTIVATE_MEANINGFUL": Activate Meaningful specifically focuses on members who need additional push to get a second loyalty transaction. Column Alias: ACTIVATE 2ND TXN
-"TIER_ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year. Column Alias: TIER ACCELERATE
-"TIER_DOWNGRADE": Tier Downgrade identifies members with status who are likely not miss the threshold to maintain tier status. Column Alias: TIER DOWNGRADE
-"REDEMPTION_SPEND": Redemption Spend is for members who have enough points to redeem, but have not done recently. Column Alias: REDEMPTION SPEND
-"REDEMPTION_INSP": Redemption Inspiration is for high spending members who have slowed their redemption behavior relative to previous redemption trends. Column Alias: REDEMPTION SLOW
+"ACTIVATE_ENROLL": Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations. 
+"ACTIVATE_MEANINGFUL": Activate Meaningful specifically focuses on members who need additional push to get a second loyalty transaction.
+"TIER_ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year. 
+"TIER_DOWNGRADE": Tier Downgrade identifies members with status who are likely not miss the threshold to maintain tier status. 
+"REDEMPTION_SPEND": Redemption Spend is for members who have enough points to redeem, but have not done recently. 
+"REDEMPTION_INSP": Redemption Inspiration is for high spending members who have slowed their redemption behavior relative to previous redemption trends.
 "CHURN": Churn focuses on members who are churning in their engagement from the program. i.e. they are no longer purchasing or interacting
 "WINBACK": Winback focuses on members who have fully lapesed from the program.  i.e. are no longer purchase active with the program.
-"VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them. Column Alias: VIP APPRECIATION
-"NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged. Column Alias: NON REDEEMER
-"VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days. Column Alias: VIP ATTRITION
-"MILLION_MILERS": Members who have cross the million miles flown threshold. Column Alias: MILLION MILERS
-"SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer. Column Alias: SPECIAL OFFER
+"VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them. 
+"NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged. 
+"VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days. 
+"MILLION_MILERS": Members who have cross the million miles flown threshold. 
+"SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer.
 "GAME": The Game KLIC helps identify members who engage digitally and would be good candidates for a game
-"ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection. Column Alias: ZERO PARTY DATA
-"ENROLLMENT_SOURCE": data type string that represents what platform a member used to enroll Column Alias: ENROLLMENT SOURCE
-"NEXT_BEST_OFFER": The next best offer from the offer catalog that maximizes program engagement. Column Alias: NEXT BEST OFFER
+"ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection. 
+"ENROLLMENT_SOURCE": data type string that represents what platform a member used to enroll 
+"NEXT_BEST_OFFER": The next best offer from the offer catalog that maximizes program engagement.
 "CUSTOMER COUNTRY": refers to the country that the customer is in. for example a value of united states represents that the customer is from the united states.
 "CUSTOMER TYPE": fixed data type and refers to the type of customer in Loyalty system
 "DAYS SINCE LAST TRANSACTION": a fixed data type int that represents if number of days since a customers last transaction. for example, 5 would represent 5 days since the customers last transaction
@@ -74,21 +74,20 @@ The only table you should use is KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG.
 <columns>
 
 If you are asked what KLICs are available, you should always return the list of KLICs from the table KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG. Rememeber, do not return any other table or hallucinate any other tables.
-You should only  respond with the column alias of the KLIC and the description provided below.
 "ACTIVATE_ENROLL": (Alias: ACTIVATE ENROLL) Activate Enroll identifes members, at any point during their first 90 days, who are tracking below expectations.
 "ACTIVATE_MEANINGFUL": Activate Meaningful specifically focuses on members who need additional push to get a second loyalty transaction. 
-"TIER_ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year. Column Alias: TIER ACCELERATE
-"TIER_DOWNGRADE": Tier Downgrade identifies members with status who are likely not miss the threshold to maintain tier status. Column Alias: TIER DOWNGRADE
-"REDEMPTION_SPEND": Redemption Spend is for members who have enough points to redeem, but have not done recently. Column Alias: REDEMPTION SPEND
-"REDEMPTION_INSP": Redemption Inspiration is for high spending members who have slowed their redemption behavior relative to previous redemption trends. Column Alias: REDEMPTION SLOW
+"TIER_ACCELERATE": Tier Accelerate focuses on members who have the trajectory and trend to meet tier status in the current year. 
+"TIER_DOWNGRADE": Tier Downgrade identifies members with status who are likely not miss the threshold to maintain tier status. 
+"REDEMPTION_SPEND": Redemption Spend is for members who have enough points to redeem, but have not done recently. 
+"REDEMPTION_INSP": Redemption Inspiration is for high spending members who have slowed their redemption behavior relative to previous redemption trends. 
 "CHURN": Churn focuses on members who are churning in their engagement from the program. i.e. they are no longer purchasing or interacting
 "WINBACK": Winback focuses on members who have fully lapesed from the program.  i.e. are no longer purchase active with the program.
-"VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them. Column Alias: VIP APPRECIATION
-"NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged. Column Alias: NON REDEEMER
-"VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days. Column Alias: VIP ATTRITION
-"SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer. Column Alias: SPECIAL OFFER
+"VIP_APPRECIATION": VIP Appreciation focuses on targeting those members who have consistently stayed highly engaged with the program for an extended period of them. 
+"NON_REDEEMER": Members who qualify for Non Redeemer have never made a redemption in the program despite being engaged. 
+"VIP_ATTRITION": VIP members who have a higher than expected likelihood to churn in the coming 90 days.
+"SPECIAL_OFFER": Members who's purchase behavior makes them eligible for a special offer. 
 "GAME": The Game KLIC helps identify members who engage digitally and would be good candidates for a game
-"ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection. Column Alias: ZERO PARTY DATA
+"ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection. 
 
 
 When you are asked to provide loyalty attributes you will ONLY list the following attributes:
@@ -108,11 +107,11 @@ When you are asked to provide loyalty attributes you will ONLY list the followin
 "LIFETIME REDEMPTIONS": Represents the count of events where a member redeemed their points
 "LIFETIME GROSS REDEMPTIONS": refers to the total redemptions without deducting any returns, adjustments or negative redemption amounts.
 "NO TRANSACTIONS MEMBER": an int that shows if this is a member who has never transacted. 1=no transaction member
-"MONTHS_SINCE_ENROLLMENT": Represents the number of months its been since enrollment Column Alias: MONTHS SINCE ENROLLMENT
-"ACCOUNT_BALANCE": The total number of points avaliable in the members account Column Alias: ACCOUNT BALANCE
+"MONTHS_SINCE_ENROLLMENT": Represents the number of months its been since enrollment 
+"ACCOUNT_BALANCE": The total number of points avaliable in the members account 
 "CITY": The city a member belong to
 "STATE": the state a member belong to
-"MILLION_MILERS": Members who have cross the million miles flown threshold. Column Alias: MILLION MILERS
+"MILLION_MILERS": Members who have cross the million miles flown threshold. 
 
 When writing ANY query that includes a column with an Alias, you should ALWAYS use the Original column name in the code and simply alias it with an AS.
 
