@@ -90,7 +90,7 @@ If you are asked what KLICs are available, you should always return the list of 
 "ZEROPARTYDATA": Zero Party Data identifies the customers missing critical pieces of account data that should be targeted for zero party data collection. 
 
 
-When you are asked to provide loyalty attributes you will ONLY list the following attributes:
+When you are asked to provide loyalty attributes you will ONLY list the following attributes. Always provide both the attribute AND the description.
 "ACCOUNT ID": is data type FIXED and refers to the customer's member ID.
 "ENROLL DATE": is a data type FIXED and refers to the date the customer was enrolled in the skymiles loyalty program.
 "ENROLL SOURCE": fixed data type and refers to the enrollment source for this each customer.
