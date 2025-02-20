@@ -23,53 +23,36 @@ Vertical: Travel & Hospitality
 *No data is shared with any model*
 """)
 
-# Initialize all session states at the start of the script (after the imports)
+class StateManager:
+    """Centralized state management"""
+    @staticmethod
+    def init_state():
+        if "state_initialized" not in st.session_state:
+            st.session_state.state_initialized = True
+            st.session_state.messages = [{"role": "system", "content": get_system_prompt()}]
+            st.session_state.csv_data = {}
+            st.session_state.button_states = {}
+            st.session_state.form_states = {}
+
+# At the very top of the script, after imports
 def init_session_state():
     """Initialize all required session state variables"""
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "system", "content": get_system_prompt()}]
-    
     if "csv_data" not in st.session_state:
         st.session_state.csv_data = {}
-    
-    if "initialized_indices" not in st.session_state:
-        st.session_state.initialized_indices = set()
 
-def init_index_state(idx):
-    """Initialize state variables for a specific index"""
-    if idx not in st.session_state.initialized_indices:
-        st.session_state[f"show_bonus_form_{idx}"] = False
-        st.session_state[f"show_download_{idx}"] = False
-        st.session_state[f"export_data_{idx}"] = None
-        st.session_state[f"export_{idx}"] = None
-        st.session_state.initialized_indices.add(idx)
-
-# Call initialization at the start
+# Call this at the very start
 init_session_state()
 
 # Function to run a different select statement to pull all rows
+@st.cache_data(ttl=3600)  # Cache for 1 hour
 def generate_full_audience(where_clause=None):
+    """Generate full audience with caching"""
     conn = st.experimental_connection("snowpark")
     query = f'SELECT "ACCOUNT ID" FROM KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG {where_clause}'
-    df = conn.query(query)  # Convert Snowpark DataFrame to Pandas DataFrame
+    df = conn.query(query)
     return df
-
-# Function to handle the export and provide immediate download
-def generate_and_download(where_clause, key):
-    if key not in st.session_state.csv_data:
-        full_audience_df = generate_full_audience(where_clause)
-        st.session_state.csv_data[key] = full_audience_df.to_csv(index=False)
-    return st.session_state.csv_data[key]
-
-def handle_export_click(where_clause, key):
-    """Callback function to handle export button click"""
-    full_audience_df = generate_full_audience(where_clause)
-    st.session_state[key] = full_audience_df.to_csv(index=False)
-    st.session_state[f"show_download_{key}"] = True
-
-def generate_bonus_code():
-    """Generate a random 5-letter bonus code"""
-    return ''.join(random.choices(string.ascii_uppercase, k=5))
 
 # Add this function near your other helper functions
 def is_audience_summary(content):
@@ -108,120 +91,77 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
 # Update the show_download_section function
 def show_download_section(where_clause, export_key, idx):
     """Helper function to show download and bonus sections"""
-    # Initialize state for this index if needed
-    init_index_state(idx)
-    
-    with st.container():
-        # Show buttons in columns
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("📥 Generate Audience Export", key=f"export_button_{idx}"):
-                full_audience_df = generate_full_audience(where_clause)
-                st.session_state[export_key] = full_audience_df.to_csv(index=False)
-                st.session_state[f"show_download_{idx}"] = True
-            
-            if st.session_state[f"show_download_{idx}"]:
-                st.download_button(
-                    label="📥 Download Audience Export",
-                    data=st.session_state[export_key],
-                    file_name="full_audience_data.csv",
-                    mime="text/csv",
-                    key=f"download_button_{idx}"
-                )
+    if f"show_bonus_form_{idx}" not in st.session_state:
+        st.session_state[f"show_bonus_form_{idx}"] = False
         
+    with st.container():
+        col1, buff, col2 = st.columns([2, 0.3, 2])
+        
+        # First column: Download button
+        with col1:
+            if st.download_button(
+                label="📥 Download Audience Export",
+                data=generate_full_audience(where_clause).to_csv(index=False),
+                file_name="audience_data.csv",
+                mime="text/csv",
+                key=f"download_button_{idx}",
+                use_container_width=True
+            ):
+                st.session_state[f"audience_data_{idx}"] = generate_full_audience(where_clause)
+        
+        # Second column: Configure Bonus button
         with col2:
-            if st.button("🎯 Configure Bonus Template", key=f"configure_bonus_{idx}"):
+            if st.button("🎯 Configure Bonus Template", key=f"bonus_button_{idx}", use_container_width=True):
                 st.session_state[f"show_bonus_form_{idx}"] = True
-
-        # Show form if enabled
+        
+        # Show form below if button was clicked
         if st.session_state[f"show_bonus_form_{idx}"]:
-            with st.form(key=f'bonus_form_{idx}'):
-                st.subheader("Configure Bonus Template")
+            with st.form(key=f'bonus_form_{idx}', clear_on_submit=True):
+                st.markdown("**Bonus Code** _(Must be unique)_")
+                st.markdown("_Example: 2XMILESDEMO_")
+                bonus_code = st.text_input("Bonus Code")
                 
-                # Bonus Code at the top
-                st.markdown("##### Bonus Code *(must be unique)*")
-                st.markdown("*Example: 2XMILESDEMO*")  # Changed from generate_bonus_code()
-                bonus_code = st.text_input(
-                    "Enter Bonus Code",
-                    value="",  # Leave input blank
-                    key=f"bonus_code_input_{idx}"
-                )
+                st.markdown("_Enter bonus description here_")
+                bonus_description = st.text_area("Bonus Description")
                 
-                # Description field
-                bonus_description = st.text_area(
-                    "Bonus Description",
-                    placeholder="Enter a description for this bonus...",
-                    key=f"bonus_description_{idx}"
-                )
-                
-                # Bonus Category and Type
                 col1, col2 = st.columns(2)
                 with col1:
-                    bonus_category = st.selectbox(
-                        "Bonus Category",
-                        options=["Base", "Bonus", "Other"],
-                        key=f"bonus_category_{idx}"
-                    )
+                    start_date = st.date_input("Start Date", value=date.today())
                 with col2:
-                    bonus_type = st.selectbox(
-                        "Bonus Type",
-                        options=["Enroll", "Goodwill", "NTE", "Transaction", "TXNBONUS"],
-                        key=f"bonus_type_{idx}"
-                    )
+                    end_date = st.date_input("End Date", value=date.today())
                 
-                # Start and End Dates
-                col1, col2 = st.columns(2)
-                with col1:
-                    start_date = st.date_input(
-                        "Start Date",
-                        min_value=date.today(),
-                        key=f"start_date_{idx}"
-                    )
-                with col2:
-                    end_date = st.date_input(
-                        "End Date",
-                        min_value=start_date,
-                        key=f"end_date_{idx}"
-                    )
+                bonus_category = st.selectbox(
+                    "Bonus Category",
+                    ["Base", "Bonus", "Other"]
+                )
                 
-                if st.form_submit_button("Create Bonus Template"):
-                    # Create bonus data with new parameters
+                bonus_type = st.selectbox(
+                    "Bonus Type",
+                    ["Enroll", "Goodwill", "NTE", "Transaction", "TXNBONUS"]
+                )
+                
+                # Single submit button
+                submit_basic = st.form_submit_button("Submit Bonus Template", use_container_width=True)
+                
+            # Handle form submission outside the form
+            if submit_basic:
+                with st.spinner("Creating bonus template..."):
+                    audience_df = generate_full_audience(where_clause)
+                    
                     bonus_data = create_bonus_json(
-                        start_date, 
-                        end_date, 
-                        bonus_code,
-                        bonus_category,
-                        bonus_type,
-                        where_clause,
+                        start_date, end_date, bonus_code,
+                        bonus_category, bonus_type, where_clause,
                         bonus_description
                     )
                     
-                    # Initialize webhook and send request
                     webhook = WorkfrontWebhook()
                     success, status = webhook.send_request(bonus_data)
                     
                     if success:
+                        st.session_state[f"bonus_data_{idx}"] = bonus_data
+                        st.session_state[f"workfront_status_{idx}"] = status
                         st.success("✅ Bonus Template Created!")
-                        st.info(status)
-                    else:
-                        st.error(f"❌ {status}")
-                    
-                    st.session_state[f"show_bonus_form_{idx}"] = False
-        
-        # Show success message and download button outside the form
-        if st.session_state.get(f"show_success_{idx}", False):
-            st.success("✅ Bonus Template Created and Sent to Workfront!")
-            st.json(st.session_state[f"bonus_data_{idx}"])
-            st.info(f"Workfront Response Status: {st.session_state[f'response_{idx}'].status_code}")
-            
-            # Show download button for JSON template
-            st.download_button(
-                label="📥 Download Bonus Template",
-                data=json.dumps(st.session_state[f"bonus_data_{idx}"], indent=2),
-                file_name=f"bonus_template_{st.session_state[f'bonus_code_{idx}']}.json",
-                mime="application/json",
-                key=f"download_bonus_{idx}"
-            )
+                        st.info(f"Workfront Response: {status}")
 
 # Prompt for user input and save
 if prompt := st.chat_input():
@@ -263,9 +203,6 @@ if st.session_state.messages[-1]["role"] != "assistant":
             sql = sql_match.group(1)
             conn = st.experimental_connection("snowpark")
             message["results"] = conn.query(sql)
-            
-            # Initialize the final state if needed
-            init_index_state("final")
             
             st.dataframe(message["results"])
             where_clause_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", sql, re.DOTALL)
