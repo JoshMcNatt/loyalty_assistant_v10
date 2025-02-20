@@ -23,14 +23,29 @@ Vertical: Travel & Hospitality
 *No data is shared with any model*
 """)
 
-# Initialize the chat messages history
-openai.api_key = st.secrets.OPENAI_API_KEY
-if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": get_system_prompt()}]
+# Initialize all session states at the start of the script (after the imports)
+def init_session_state():
+    """Initialize all required session state variables"""
+    if "messages" not in st.session_state:
+        st.session_state.messages = [{"role": "system", "content": get_system_prompt()}]
+    
+    if "csv_data" not in st.session_state:
+        st.session_state.csv_data = {}
+    
+    if "initialized_indices" not in st.session_state:
+        st.session_state.initialized_indices = set()
 
-# Initialize session state for CSV data if not present
-if 'csv_data' not in st.session_state:
-    st.session_state.csv_data = {}
+def init_index_state(idx):
+    """Initialize state variables for a specific index"""
+    if idx not in st.session_state.initialized_indices:
+        st.session_state[f"show_bonus_form_{idx}"] = False
+        st.session_state[f"show_download_{idx}"] = False
+        st.session_state[f"export_data_{idx}"] = None
+        st.session_state[f"export_{idx}"] = None
+        st.session_state.initialized_indices.add(idx)
+
+# Call initialization at the start
+init_session_state()
 
 # Function to run a different select statement to pull all rows
 def generate_full_audience(where_clause=None):
@@ -63,9 +78,12 @@ def is_audience_summary(content):
 
 # First, modify the create_bonus_json function to accept bonus_category and bonus_type:
 # Update the create_bonus_json function to accept bonus_description
-def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_type, bonus_description=None):
+def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_type, where_clause, bonus_description=None):
     """Create a JSON structure for the bonus configuration"""
     description = bonus_description if bonus_description else f"{bonus_code} - {start_date.strftime('%B')} {start_date.year}"
+    
+    # Get audience data
+    audience_df = generate_full_audience(where_clause)
     
     return [{
         # Using consistent field names
@@ -78,42 +96,45 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
         "programCode": "SKYMILES",
         "calcType": "Fixed Amount",
         "rewardAmount": 2,
-        "roundingRule": "Always Up"
+        "roundingRule": "Always Up",
+        "documents": {
+            "audience": audience_df.to_dict(orient='records'),
+            "where_clause": where_clause,
+            "created_at": datetime.now().isoformat(),
+            "total_accounts": len(audience_df)
+        }
     }]
 
+# Update the show_download_section function
 def show_download_section(where_clause, export_key, idx):
     """Helper function to show download and bonus sections"""
+    # Initialize state for this index if needed
+    init_index_state(idx)
+    
     with st.container():
-        # Initialize states if not present
-        if f"show_buttons_{idx}" not in st.session_state:
-            st.session_state[f"show_buttons_{idx}"] = True
-        
-        # Always show both buttons if state is True
-        if st.session_state[f"show_buttons_{idx}"]:
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("📥 Export Audience Data", key=f"export_button_{idx}"):
-                    # Only generate data when export button is clicked
-                    full_audience_df = generate_full_audience(where_clause)
-                    st.session_state[export_key] = full_audience_df.to_csv(index=False)
-                    st.session_state[f"show_download_{idx}"] = True
+        # Show buttons in columns
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("📥 Generate Audience Export", key=f"export_button_{idx}"):
+                full_audience_df = generate_full_audience(where_clause)
+                st.session_state[export_key] = full_audience_df.to_csv(index=False)
+                st.session_state[f"show_download_{idx}"] = True
             
-            # Show download button only after export is generated
-            if st.session_state.get(f"show_download_{idx}", False):
+            if st.session_state[f"show_download_{idx}"]:
                 st.download_button(
-                    label="📥 Download Audience Data",
+                    label="📥 Download Audience Export",
                     data=st.session_state[export_key],
                     file_name="full_audience_data.csv",
                     mime="text/csv",
                     key=f"download_button_{idx}"
                 )
-            
-            with col2:
-                if st.button("🎯 Configure Bonus", key=f"bonus_button_{idx}"):
-                    st.session_state[f"show_bonus_form_{idx}"] = True
         
-        # Bonus form in its own container
-        if st.session_state.get(f"show_bonus_form_{idx}", False):
+        with col2:
+            if st.button("🎯 Configure Bonus Template", key=f"configure_bonus_{idx}"):
+                st.session_state[f"show_bonus_form_{idx}"] = True
+
+        # Show form if enabled
+        if st.session_state[f"show_bonus_form_{idx}"]:
             with st.form(key=f'bonus_form_{idx}'):
                 st.subheader("Configure Bonus Template")
                 
@@ -171,6 +192,7 @@ def show_download_section(where_clause, export_key, idx):
                         bonus_code,
                         bonus_category,
                         bonus_type,
+                        where_clause,
                         bonus_description
                     )
                     
@@ -240,14 +262,14 @@ if st.session_state.messages[-1]["role"] != "assistant":
         if sql_match:
             sql = sql_match.group(1)
             conn = st.experimental_connection("snowpark")
-            # Execute query only once
             message["results"] = conn.query(sql)
+            
+            # Initialize the final state if needed
+            init_index_state("final")
+            
             st.dataframe(message["results"])
-
-            # Extract WHERE clause
             where_clause_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", sql, re.DOTALL)
             where_clause = where_clause_match.group(0) if where_clause_match else ""
-
             export_key = "export_final"
             show_download_section(where_clause, export_key, "final")
 
