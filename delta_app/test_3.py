@@ -91,28 +91,35 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
 # Update the show_download_section function
 def show_download_section(where_clause, export_key, idx):
     """Helper function to show download and bonus sections"""
+    # Initialize states if not present
     if f"show_bonus_form_{idx}" not in st.session_state:
         st.session_state[f"show_bonus_form_{idx}"] = False
+    if f"audience_data_{idx}" not in st.session_state:
+        st.session_state[f"audience_data_{idx}"] = generate_full_audience(where_clause)
         
     with st.container():
         col1, buff, col2 = st.columns([2, 0.3, 2])
         
-        # First column: Download button
+        # First column: Download button - use cached data
         with col1:
-            if st.download_button(
+            st.download_button(
                 label="📥 Download Audience Export",
-                data=generate_full_audience(where_clause).to_csv(index=False),
+                data=st.session_state[f"audience_data_{idx}"].to_csv(index=False),
                 file_name="audience_data.csv",
                 mime="text/csv",
                 key=f"download_button_{idx}",
                 use_container_width=True
-            ):
-                st.session_state[f"audience_data_{idx}"] = generate_full_audience(where_clause)
+            )
         
         # Second column: Configure Bonus button
         with col2:
-            if st.button("🎯 Configure Bonus Template", key=f"bonus_button_{idx}", use_container_width=True):
-                st.session_state[f"show_bonus_form_{idx}"] = True
+            if st.button(
+                "🎯 Configure Bonus Template", 
+                key=f"bonus_button_{idx}",
+                use_container_width=True,
+                on_click=lambda: setattr(st.session_state, f"show_bonus_form_{idx}", not st.session_state[f"show_bonus_form_{idx}"])
+            ):
+                pass
         
         # Show form below if button was clicked
         if st.session_state[f"show_bonus_form_{idx}"]:
