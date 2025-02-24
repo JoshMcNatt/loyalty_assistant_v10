@@ -93,92 +93,91 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
 # Update the show_download_section function
 def show_download_section(where_clause, export_key, idx):
     """Helper function to show download and bonus sections"""
-    # Create permanent button container key
-    button_container_key = f"button_container_{export_key}_{hash(where_clause)}"
+    # Create a unique key for this section that includes the where clause
+    section_key = f"{idx}_{hash(where_clause)}"
     
-    # Initialize button state if not exists
-    if button_container_key not in st.session_state:
-        st.session_state[button_container_key] = {
-            "show_form": False,
-            "form_submitted": False
+    # Initialize section state
+    if section_key not in st.session_state:
+        st.session_state[section_key] = {
+            "show_form": False
         }
 
-    # Create separate containers for buttons and form
-    buttons = st.container()
-    form_area = st.container()
+    # Create a persistent container
+    button_container = st.container()
     
-    with buttons:
-        cols = st.columns([2, 0.3, 2])
+    with button_container:
+        col1, buff, col2 = st.columns([2, 0.3, 2])
         
-        # Download button - always generate fresh data
-        with cols[0]:
-            st.download_button(
+        # First column: Download button
+        with col1:
+            download_clicked = st.download_button(
                 label="📥 Download Audience Export",
                 data=generate_full_audience(where_clause).to_csv(index=False),
                 file_name=f"audience_export_{idx}.csv",
                 mime="text/csv",
-                key=f"download_{button_container_key}",
+                key=f"download_{section_key}",
                 use_container_width=True
             )
         
-        # Configure button
-        with cols[2]:
-            if st.button(
-                "🎯 Configure Bonus Template",
-                key=f"configure_{button_container_key}",
+        # Second column: Configure button
+        with col2:
+            configure_clicked = st.button(
+                "🎯 Configure Bonus Template", 
+                key=f"configure_{section_key}",
                 use_container_width=True
-            ):
-                st.session_state[button_container_key]["show_form"] = \
-                    not st.session_state[button_container_key]["show_form"]
-    
-    # Form in separate container
-    with form_area:
-        if st.session_state[button_container_key]["show_form"]:
-            with st.form(key=f'form_{button_container_key}', clear_on_submit=False):
-                st.markdown("**Bonus Code** _(Must be unique)_")
-                st.markdown("_Example: 2XMILESDEMO_")
-                bonus_code = st.text_input("Bonus Code")
+            )
+        
+        if configure_clicked:
+            st.session_state[section_key]["show_form"] = not st.session_state[section_key]["show_form"]
+
+    # Show form in separate container if enabled
+    if st.session_state[section_key]["show_form"]:
+        with st.form(key=f'form_{section_key}', clear_on_submit=True):
+            st.markdown("**Bonus Code** _(Must be unique)_")
+            st.markdown("_Example: 2XMILESDEMO_")
+            bonus_code = st.text_input("Bonus Code")
+            
+            st.markdown("_Enter bonus description here_")
+            bonus_description = st.text_area("Bonus Description")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                start_date = st.date_input("Start Date", value=date.today())
+            with col2:
+                end_date = st.date_input("End Date", value=date.today())
+            
+            bonus_category = st.selectbox(
+                "Bonus Category",
+                ["Base", "Bonus", "Other"]
+            )
+            
+            bonus_type = st.selectbox(
+                "Bonus Type",
+                ["Enroll", "Goodwill", "NTE", "Transaction", "TXNBONUS"]
+            )
+            
+            # Single submit button
+            submit_basic = st.form_submit_button("Submit Bonus Template", use_container_width=True)
+            
+        # Handle form submission outside the form
+        if submit_basic:
+            with st.spinner("Creating bonus template..."):
+                audience_df = generate_full_audience(where_clause)
                 
-                st.markdown("_Enter bonus description here_")
-                bonus_description = st.text_area("Bonus Description")
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    start_date = st.date_input("Start Date", value=date.today())
-                with col2:
-                    end_date = st.date_input("End Date", value=date.today())
-                
-                bonus_category = st.selectbox(
-                    "Bonus Category",
-                    ["Base", "Bonus", "Other"]
+                bonus_data = create_bonus_json(
+                    start_date, end_date, bonus_code,
+                    bonus_category, bonus_type, where_clause,
+                    bonus_description
                 )
                 
-                bonus_type = st.selectbox(
-                    "Bonus Type",
-                    ["Enroll", "Goodwill", "NTE", "Transaction", "TXNBONUS"]
-                )
+                webhook = WorkfrontWebhook()
+                success, status = webhook.send_request(bonus_data)
                 
-                # Single submit button
-                submit_basic = st.form_submit_button("Submit Bonus Template", use_container_width=True)
-                
-                if submit_basic:
-                    with st.spinner("Creating bonus template..."):
-                        try:
-                            bonus_data = create_bonus_json(
-                                start_date, end_date, bonus_code,
-                                bonus_category, bonus_type, where_clause,
-                                bonus_description
-                            )
-                            
-                            webhook = WorkfrontWebhook()
-                            success, status = webhook.send_request(bonus_data)
-                            
-                            if success:
-                                st.session_state[button_container_key]["form_submitted"] = True
-                                st.success("✅ Bonus Template Created!")
-                                st.info(f"Workfront Response: {status}")
-                        except Exception as e:
-                            st.error("Failed to create bonus template. Please try again.")
+                if success:
+                    st.session_state[f"bonus_data_{idx}"] = bonus_data
+                    st.session_state[f"workfront_status_{idx}"] = status
+                    st.success("✅ Bonus Template Created!")
+                    st.info(f"Workfront Response: {status}")
 
 # Prompt for user input and save
 if prompt := st.chat_input():
