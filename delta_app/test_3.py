@@ -80,7 +80,6 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
         }
     }]
 
-# Update the show_download_section function
 def show_download_section(where_clause, export_key, idx):
     """Helper function to show download and bonus sections with independent state management"""
     # Create a unique, stable identifier for this section
@@ -112,16 +111,19 @@ def show_download_section(where_clause, export_key, idx):
         )
     
     with col3:
-        # Use button click to toggle form visibility
+        # Add a button click handler to session state
+        if f"configure_clicked_{section_id}" not in st.session_state:
+            st.session_state[f"configure_clicked_{section_id}"] = False
+            
         if st.button(
             "🎯 Configure Bonus Template",
             key=f"configure_{section_id}",
             use_container_width=True
         ):
-            st.session_state.sections[section_id]["show_form"] = \
-                not st.session_state.sections[section_id]["show_form"]
+            st.session_state[f"configure_clicked_{section_id}"] = not st.session_state[f"configure_clicked_{section_id}"]
+            st.session_state.sections[section_id]["show_form"] = st.session_state[f"configure_clicked_{section_id}"]
 
-    # Show form based on session state
+    # Show form based on the persistent state
     if st.session_state.sections[section_id]["show_form"]:
         show_bonus_form(section_id, where_clause)
 
@@ -191,6 +193,12 @@ if prompt := st.chat_input():
         k: v for k, v in st.session_state.sections.items() 
         if k in active_sections
     }
+    
+    # Preserve button click states
+    button_states = {k: v for k, v in st.session_state.items() if k.startswith('configure_clicked_')}
+    for section_id in active_sections:
+        if f"configure_clicked_{section_id}" in button_states:
+            st.session_state.sections[section_id]["show_form"] = button_states[f"configure_clicked_{section_id}"]
     
     st.session_state.messages.append({"role": "user", "content": prompt})
 
