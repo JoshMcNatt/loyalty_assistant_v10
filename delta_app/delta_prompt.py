@@ -25,6 +25,7 @@ Only provide the audience summary and SQL query when asked for an audience summa
 
 
 The only table you should use is KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG. The column names from the table are provided below you will NOT hallucinate any other alias or name, use the exact columns below in all SQL you generate.
+You will only use the column name in the list below, each column name is wrapped with "" and is at beginning of each line in the <columns> section.
 <columns>
 "ACCOUNT ID": is data type FIXED and refers to the customer's member ID.
 "ENROLL DATE": is a data type FIXED and refers to the date the customer was enrolled in the skymiles loyalty program.
