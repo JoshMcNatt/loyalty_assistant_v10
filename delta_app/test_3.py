@@ -3,13 +3,14 @@ import re
 import streamlit as st
 import pandas as pd
 import uuid
-from delta_prompt import get_system_prompt
+from amt_prompt import get_system_prompt
 import datetime
 import random
 import string
 import json
 from datetime import datetime, timezone, date
 from wf_webhook import WorkfrontWebhook
+import hashlib  # Added for more stable hashing
 
 st.sidebar.image('delta_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_width=True)
 
@@ -23,20 +24,27 @@ Vertical: Travel & Hospitality
 *No data is shared with any model*
 """)
 
-# Remove the StateManager class and update init_session_state
 def init_session_state():
     """Initialize all required session state variables"""
     if "state_initialized" not in st.session_state:
         st.session_state.state_initialized = True
         st.session_state.messages = [{"role": "system", "content": get_system_prompt()}]
         st.session_state.sections = {}  # Store section states here
-        st.session_state.current_sections = set()
+        st.session_state.section_message_map = {}  # Map message indices to section IDs
 
 # Call this at the very start
 init_session_state()
 
+# Function to create a stable section ID 
+def create_stable_id(where_clause, export_key):
+    """Create a stable ID from where_clause and export_key"""
+    # Clean the where clause to make it more stable
+    cleaned_clause = re.sub(r'\s+', ' ', where_clause).strip().lower()
+    # Use MD5 for more stable hashing
+    hash_obj = hashlib.md5(cleaned_clause.encode())
+    return f"section_{export_key}_{hash_obj.hexdigest()[:8]}"
+
 # Function to run a different select statement to pull all rows
-# Remove the cache decorator and modify the function
 def generate_full_audience(where_clause=None):
     """Generate full audience without caching"""
     if not where_clause:
@@ -46,13 +54,12 @@ def generate_full_audience(where_clause=None):
     df = conn.query(query)
     return df
 
-# Add this function near your other helper functions
+# Function to check if the message contains an audience summary
 def is_audience_summary(content):
     """Check if the message contains an audience summary"""
     return "Audience Summary:" in content and "```sql" in content
 
-# First, modify the create_bonus_json function to accept bonus_category and bonus_type:
-# Update the create_bonus_json function to accept bonus_description
+# Function to create a JSON structure for the bonus configuration
 def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_type, where_clause, bonus_description=None):
     """Create a JSON structure for the bonus configuration"""
     description = bonus_description if bonus_description else f"{bonus_code} - {start_date.strftime('%B')} {start_date.year}"
@@ -80,10 +87,14 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
         }
     }]
 
-def show_download_section(where_clause, export_key, idx):
-    """Helper function to show download and bonus sections with independent state management"""
-    # Create a unique, stable identifier for this section
-    section_id = f"section_{export_key}_{hash(where_clause)}"
+# Helper function to show download and bonus sections with improved state management
+def show_download_section(where_clause, export_key, idx, message_idx):
+    """Helper function to show download and bonus sections with improved state management"""
+    # Create a stable identifier for this section
+    section_id = create_stable_id(where_clause, export_key)
+    
+    # Map message index to section ID for persistence
+    st.session_state.section_message_map[message_idx] = section_id
     
     # Initialize section state if not exists
     if section_id not in st.session_state.sections:
@@ -93,10 +104,7 @@ def show_download_section(where_clause, export_key, idx):
             "where_clause": where_clause
         }
     
-    # Add section to current sections set
-    st.session_state.current_sections.add(section_id)
-    
-    # Create columns without container
+    # Create columns
     col1, col2, col3 = st.columns([2, 0.3, 2])
     
     with col1:
@@ -111,19 +119,16 @@ def show_download_section(where_clause, export_key, idx):
         )
     
     with col3:
-        # Add a button click handler to session state
-        if f"configure_clicked_{section_id}" not in st.session_state:
-            st.session_state[f"configure_clicked_{section_id}"] = False
-            
+        # Use button click to toggle form visibility
         if st.button(
             "🎯 Configure Bonus Template",
             key=f"configure_{section_id}",
             use_container_width=True
         ):
-            st.session_state[f"configure_clicked_{section_id}"] = not st.session_state[f"configure_clicked_{section_id}"]
-            st.session_state.sections[section_id]["show_form"] = st.session_state[f"configure_clicked_{section_id}"]
+            st.session_state.sections[section_id]["show_form"] = \
+                not st.session_state.sections[section_id]["show_form"]
 
-    # Show form based on the persistent state
+    # Show form based on session state
     if st.session_state.sections[section_id]["show_form"]:
         show_bonus_form(section_id, where_clause)
 
@@ -133,7 +138,7 @@ def show_bonus_form(section_id, where_clause):
         col1, col2 = st.columns(2)
         
         st.markdown("**Bonus Code** _(Must be unique)_")
-        st.markdown("_Example: 2XMILESDEMO_")
+        st.markdown("_Example: 2XPOINTSDEMO_")
         bonus_code = st.text_input("Bonus Code", key=f"bonus_code_{section_id}")
 
         st.markdown("_Enter bonus description here_")
@@ -182,39 +187,34 @@ def show_bonus_form(section_id, where_clause):
                 except Exception as e:
                     st.error(f"Failed to create bonus template: {str(e)}")
 
-# Clean up unused sections at the start of each chat interaction
+# Process chat input
 if prompt := st.chat_input():
-    # Store current sections before clearing
-    active_sections = st.session_state.current_sections.copy()
-    st.session_state.current_sections = set()
-    
-    # Only keep states for active sections
-    st.session_state.sections = {
-        k: v for k, v in st.session_state.sections.items() 
-        if k in active_sections
-    }
-    
-    # Preserve button click states
-    button_states = {k: v for k, v in st.session_state.items() if k.startswith('configure_clicked_')}
-    for section_id in active_sections:
-        if f"configure_clicked_{section_id}" in button_states:
-            st.session_state.sections[section_id]["show_form"] = button_states[f"configure_clicked_{section_id}"]
-    
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-# Modify the message display section
+# Display messages and associated sections
 for idx, message in enumerate(st.session_state.messages):
     if message["role"] == "system":
         continue
     with st.chat_message(message["role"]):
         st.write(message["content"])
-        # If this is an audience summary response with results, handle export
-        if "results" in message and is_audience_summary(message["content"]):
+        
+        # Always show dataframe if results exist, regardless of other conditions
+        if message["role"] == "assistant" and "results" in message:
             st.dataframe(message["results"])
+        
+        # Handle export buttons for audience summaries
+        if message["role"] == "assistant" and "results" in message and is_audience_summary(message["content"]):
             sql_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", message["content"], re.DOTALL)
             where_clause = sql_match.group(0) if sql_match else ""
             export_key = f"export_{idx}"
-            show_download_section(where_clause, export_key, idx)
+            show_download_section(where_clause, export_key, idx, idx)
+        
+        # Check if this message has a previously created section
+        elif idx in st.session_state.section_message_map:
+            section_id = st.session_state.section_message_map[idx]
+            if section_id in st.session_state.sections:
+                where_clause = st.session_state.sections[section_id]["where_clause"]
+                show_download_section(where_clause, f"export_{idx}", idx, idx)
 
 # Generate a new assistant response if needed
 if st.session_state.messages[-1]["role"] != "assistant":
@@ -239,10 +239,18 @@ if st.session_state.messages[-1]["role"] != "assistant":
             conn = st.experimental_connection("snowpark")
             message["results"] = conn.query(sql)
             
+            # Display dataframe before adding message to state
             st.dataframe(message["results"])
+            
+            # Add message to state
+            st.session_state.messages.append(message)
+            message_idx = len(st.session_state.messages) - 1  # Get correct index
+            
+            # Show download section if appropriate
             where_clause_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", sql, re.DOTALL)
             where_clause = where_clause_match.group(0) if where_clause_match else ""
-            export_key = "export_final"
-            show_download_section(where_clause, export_key, "final")
-
-        st.session_state.messages.append(message)
+            export_key = f"export_{message_idx}"
+            show_download_section(where_clause, export_key, "final", message_idx)
+        else:
+            # Just add the message to state
+            st.session_state.messages.append(message)
