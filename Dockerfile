@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8501
 
 # Run Streamlit when the container launches
-CMD ["streamlit", "run", "delta_app/test_3.py"]
+CMD ["streamlit", "run", "gap_app/app.py"]
