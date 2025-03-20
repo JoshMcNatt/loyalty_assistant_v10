@@ -36,8 +36,8 @@ You will ALWAYS return a list when asked about what attributes are available.
 "TENURE MONTHS": refers to the number of months a member has been has had membership
 "PORTFOLIO": refers to the portfolio a member belongs to
 "TIER": refers to the tier this customer has achieved in the skymiles loyalty program.
-"CARDHOLDER FLAG": an int that shows If the cardholder is a cardholder or not. 1=cardholder, 0=NOT a cardholder
-"CARDHOLDER TYPE": Refers to the specific card a cardholder has
+"CARDHOLDER FLAG": A 1 or 0 indicator that shows If the member is a cardholder or not.
+"CARDHOLDER TYPE": Refers to the specific card a cardholder has.
 "LIFETIME SALES": Represents the lifetime sales/revenue of a member since enrollment. 
 "LIFETIME TRANSACTIONS": is the number of transactions the customer has made since enrollment. It is NULL if the customer has not made a purchase.
 "LIFETIME REDEEMED POINTS": The total redemmed points a customer has since enrollment
