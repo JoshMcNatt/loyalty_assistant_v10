@@ -59,6 +59,16 @@ def is_audience_summary(content):
     """Check if the message contains an audience summary"""
     return "Audience Summary:" in content and "```sql" in content
 
+# Add this function after the is_audience_summary function
+def is_audience_request(content):
+    """Check if the message is requesting audience information or profiling"""
+    audience_keywords = [
+        "audience", "profile audience", "audience summary"
+    ]
+    
+    content_lower = content.lower()
+    return any(keyword.lower() in content_lower for keyword in audience_keywords)
+
 # Function to create a JSON structure for the bonus configuration
 def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_type, where_clause, bonus_description=None):
     """Create a JSON structure for the bonus configuration"""
@@ -88,7 +98,7 @@ def create_bonus_json(start_date, end_date, bonus_code, bonus_category, bonus_ty
     }]
 
 # Helper function to show download and bonus sections with improved state management
-def show_download_section(where_clause, export_key, idx, message_idx):
+def show_download_section(where_clause, export_key, idx, message_idx, show_buttons=False):
     """Helper function to show download and bonus sections with improved state management"""
     # Create a stable identifier for this section
     section_id = create_stable_id(where_clause, export_key)
@@ -104,33 +114,35 @@ def show_download_section(where_clause, export_key, idx, message_idx):
             "where_clause": where_clause
         }
     
-    # Create columns
-    col1, col2, col3 = st.columns([2, 0.3, 2])
-    
-    with col1:
-        audience_data = generate_full_audience(where_clause)
-        st.download_button(
-            label="📥 Download Audience Export",
-            data=audience_data.to_csv(index=False),
-            file_name=f"audience_export_{idx}.csv",
-            mime="text/csv",
-            key=f"download_{section_id}",
-            use_container_width=True
-        )
-    
-    with col3:
-        # Use button click to toggle form visibility
-        if st.button(
-            "🎯 Configure Bonus Template",
-            key=f"configure_{section_id}",
-            use_container_width=True
-        ):
-            st.session_state.sections[section_id]["show_form"] = \
-                not st.session_state.sections[section_id]["show_form"]
+    # Only show buttons if this is an audience-related request
+    if show_buttons:
+        # Create columns
+        col1, col2, col3 = st.columns([2, 0.3, 2])
+        
+        with col1:
+            audience_data = generate_full_audience(where_clause)
+            st.download_button(
+                label="📥 Download Audience Export",
+                data=audience_data.to_csv(index=False),
+                file_name=f"audience_export_{idx}.csv",
+                mime="text/csv",
+                key=f"download_{section_id}",
+                use_container_width=True
+            )
+        
+        with col3:
+            # Use button click to toggle form visibility
+            if st.button(
+                "🎯 Configure Bonus Template",
+                key=f"configure_{section_id}",
+                use_container_width=True
+            ):
+                st.session_state.sections[section_id]["show_form"] = \
+                    not st.session_state.sections[section_id]["show_form"]
 
-    # Show form based on session state
-    if st.session_state.sections[section_id]["show_form"]:
-        show_bonus_form(section_id, where_clause)
+        # Show form based on session state
+        if st.session_state.sections[section_id]["show_form"]:
+            show_bonus_form(section_id, where_clause)
 
 def show_bonus_form(section_id, where_clause):
     """Separate function to handle bonus form display"""
@@ -204,17 +216,40 @@ for idx, message in enumerate(st.session_state.messages):
         
         # Handle export buttons for audience summaries
         if message["role"] == "assistant" and "results" in message and is_audience_summary(message["content"]):
+            # Find the corresponding user message
+            user_msg_idx = idx - 1
+            user_requested_audience = False
+            
+            # Make sure we're not going below index 0
+            if user_msg_idx >= 0 and st.session_state.messages[user_msg_idx]["role"] == "user":
+                user_msg = st.session_state.messages[user_msg_idx]["content"]
+                user_requested_audience = is_audience_request(user_msg)
+            
+            # Also check if the response itself contains audience information
+            response_contains_audience = is_audience_request(message["content"])
+            
+            # Show buttons if either condition is met
+            show_buttons = user_requested_audience or response_contains_audience
+            
             sql_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", message["content"], re.DOTALL)
             where_clause = sql_match.group(0) if sql_match else ""
             export_key = f"export_{idx}"
-            show_download_section(where_clause, export_key, idx, idx)
+            show_download_section(where_clause, export_key, idx, idx, show_buttons=show_buttons)
         
         # Check if this message has a previously created section
         elif idx in st.session_state.section_message_map:
             section_id = st.session_state.section_message_map[idx]
             if section_id in st.session_state.sections:
+                # Find the corresponding user message to check if it was an audience request
+                user_msg_idx = idx - 1
+                user_requested_audience = False
+                # Make sure we're not going below index 0
+                if user_msg_idx >= 0 and st.session_state.messages[user_msg_idx]["role"] == "user":
+                    user_msg = st.session_state.messages[user_msg_idx]["content"]
+                    user_requested_audience = is_audience_request(user_msg)
+                
                 where_clause = st.session_state.sections[section_id]["where_clause"]
-                show_download_section(where_clause, f"export_{idx}", idx, idx)
+                show_download_section(where_clause, f"export_{idx}", idx, idx, show_buttons=user_requested_audience)
 
 # Generate a new assistant response if needed
 if st.session_state.messages[-1]["role"] != "assistant":
@@ -246,11 +281,20 @@ if st.session_state.messages[-1]["role"] != "assistant":
             st.session_state.messages.append(message)
             message_idx = len(st.session_state.messages) - 1  # Get correct index
             
+            # Check if either the user prompt or the response is audience-related
+            user_msg = st.session_state.messages[message_idx-1]["content"]
+            user_requested_audience = is_audience_request(user_msg)
+            response_contains_audience = is_audience_request(response)
+            
+            # Show buttons if either the user requested or the response contains audience information
+            show_buttons = user_requested_audience or response_contains_audience
+            
             # Show download section if appropriate
-            where_clause_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", sql, re.DOTALL)
-            where_clause = where_clause_match.group(0) if where_clause_match else ""
-            export_key = f"export_{message_idx}"
-            show_download_section(where_clause, export_key, "final", message_idx)
+            if is_audience_summary(response):
+                where_clause_match = re.search(r"WHERE.*?(?=\b(GROUP BY|ORDER BY|LIMIT|$))", sql, re.DOTALL)
+                where_clause = where_clause_match.group(0) if where_clause_match else ""
+                export_key = f"export_{message_idx}"
+                show_download_section(where_clause, export_key, "final", message_idx, show_buttons=show_buttons)
         else:
             # Just add the message to state
             st.session_state.messages.append(message)
