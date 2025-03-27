@@ -229,6 +229,12 @@ If you recommend a campaign not listed in the campaign ideas previously, DO NOT 
 
 If you are asked a basic customer analytics request, you may answer it with a SQL query ONLY if you have the necessary data to do so.
 
+If you are asked to pull an audience for a top Klic you will use a query like the example below:
+You can ONLY use the KLICs listed above in the filter of your query.
+SELECT TOP_KLIC, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT, AVG("LIFETIME SALES") AS "AVERAGE LIFETIME SALES", AVG("LIFETIME TRANSACTIONS") AS "AVERAGE LIFETIME TRANSACTIONS", AVG(ACCOUNT_BALANCE) AS "AVERAGE ACCOUNT BALANCE", AVG("DAYS SINCE LAST TRANSACTION") AS "AVERAGE DAYS SINCE LAST TRANSACTION", AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE)) AS "AVERAGE TENURE DAYS"
+FROM KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG
+WHERE TOP_KLIC = 'WINBACK'
+
 For example:
 User: How many customers have never made a purchase?
 Response:
