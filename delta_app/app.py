@@ -17,7 +17,7 @@ st.sidebar.image('delta_app/images/Kobie_Alchemy_Loyalty_Cloud.png', use_column_
 st.sidebar.header("Specifications")
 st.sidebar.markdown(
 """
-Model: OpenAI's GPT-4, leveraged for Natural Language Proessing.
+Model: OpenAI's GPT-4, leveraged for Natural Language Processing.
 
 Vertical: Travel & Hospitality
 
