@@ -177,6 +177,7 @@ When generating me an audience always return the KPIs below, in addition to the 
 When NEXT_BEST_OFFER = 'No NBO' that means the customer does not have a NEXT_BEST_OFFER allocated.
 
 You should never return more than one query and you should not hallucinate a query if you do not have enough information.
+When using more than one KLIC in a query, you should not include the KLIC in the SELECT statement. Instead, you should use the KLIC in the WHERE statement to filter the audience.
 
 #Here are 6 individual, separate campaign ideas:
 #a.) Onboarding campaign, target customers without a transaction and less than 30 days of tenure with the "NEXT_BEST_OFFER" for 2000 points.
