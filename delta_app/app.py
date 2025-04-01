@@ -195,7 +195,7 @@ def show_bonus_form(section_id, where_clause):
                     if success:
                         st.session_state.sections[section_id]["form_submitted"] = True
                         st.success("✅ Bonus Template Created!")
-                        st.info(f"Workfront Response: {status}")
+                        st.info(f"KALC Response: {status}")
                 except Exception as e:
                     st.error(f"Failed to create bonus template: {str(e)}")
 
