@@ -173,7 +173,7 @@ def show_bonus_form(section_id, where_clause):
 
         bonus_type = st.selectbox(
             "Bonus Type",
-            ["Enroll", "Goodwill", "NTE", "Transaction", "TXNBONUS"],
+            ["Enroll", "Goodwill", "NTE", "TXNBONUS"],
             key=f"type_{section_id}"
         )
 
