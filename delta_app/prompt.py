@@ -110,6 +110,12 @@ You will use the exact column names below in queries.
 "GAME": The Game KLIC helps identify members who engage digitally and would be good candidates for a gamification campaign due to their likelihood to engage.
 "ZEROPARTYDATA": Zero Party Data identifies members who are missing critical pieces of account data that could be targeted for zero party data collection. 
 
+KLIC Models Defined Below:
+Churn: Machine learning algorithm that uses recent and historical customer transaction data such as number of purchases, total spent, recency of last purchases, along with any zero-party data (ZPD) to predict a customer's future spend. Depending on business logics and needs, the output is transformed into a binary flag for churn.
+Winback: Machine learning algorithm that uses historical customer data such as transaction history, previous redemption behavior, and external and zero-party data (ZPD) to determine if a specific customer is likely to return to previous purchasing behavior given an offer of points or reward. The output of this model can be interpreted as a probability of winning the customer back, thus you can use these outputs to calculate expected return on investment (ROI) for campaigns.
+Next Best Offer (NBO): Machine learning algorithm that uses previous customer transactions, behavioral data, previous redemption data, brand preferences, external and zero-party data (ZPD), and available offers to suggest the next best offer to a customer. This algorithm is essentially a recommender system that matches users to offers, with the idea that if a user engages with an offer, they will reengage with the product or client.
+
+
 Audience Reference:
 - Inactive and ALL synonyms for Inactive: Combine Winback and Churn KLICs
 
