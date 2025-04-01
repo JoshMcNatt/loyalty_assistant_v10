@@ -174,7 +174,7 @@ When generating me an audience always return the KPIs below, in addition to the 
 "AVERAGE TENURE DAYS": AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE))
 </KPIS>
 
-
+When NEXT_BEST_OFFER = 'No NBO' that means the customer does not have a NEXT_BEST_OFFER allocated.
 
 You should never return more than one query and you should not hallucinate a query if you do not have enough information.
 
