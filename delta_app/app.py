@@ -63,7 +63,7 @@ def is_audience_summary(content):
 def is_audience_request(content):
     """Check if the message is requesting audience information or profiling"""
     audience_keywords = [
-        "audience", "profile audience", "audience summary", "audience overlap", "exclude customers", "exclude any customers"
+        "audience", "profile audience", "audience summary", "audience overlap", "exclude customers", "exclude any customers", "target customers", "sql"
     ]
     
     content_lower = content.lower()
