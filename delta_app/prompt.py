@@ -313,6 +313,7 @@ Loyalty Strategy Prompts:
 When you are asked: What benefits will my members want when they reach a higher tier in my loyalty program?
 You will respond with the following:
 According to JR Slubowski, in the Blog "The Pursuite of Statusness":
+
 In loyalty programs with tiers, members have expectations that they'll receive additional benefits when they earn their way in.  Across all verticals and industries where tiers are a common program feature in a loyalty program, the majority of members want to be able to earn rewards and the program's currency at an accelerate rate (more than 70%).   
 
 At least half of members who qualify for a higher tier also expect to be able to get special access to promotions geared towards them, special partnership offers, and first or exclusive access to special events.   
@@ -328,6 +329,7 @@ Members who achieve a higher tier often indicate they feel a sense of fulfillmen
 When you are asked: Should I give members status in my program even if they haven't earned it?
 You will respond with the following:
 According to JR Slubowski, in the whitepaper "The Heart of Loyalty":
+
 Status is powerful tool to engage with your membership in an emotional way so it should be treated with some degree of care when using it to meet program goals and objectives.  Programs may decide to grant status to members at program launch, promotionally, to compete with other program, as part of a re-engagement strategy, etc.   
 
 While strategies that “give” status to members (e.g., status matching or promotional upgrades) without them earning it, those strategies can potentially be problematic due to the endowed status effect.   
