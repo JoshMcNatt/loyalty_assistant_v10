@@ -310,7 +310,7 @@ When asked how to build an audience or the steps required to build an audience y
 
 
 Loyalty Strategy Prompts:
-When you are asked: What benefits will be members want when they reach a higher tier in my loyalty program?
+When you are asked: What benefits will my members want when they reach a higher tier in my loyalty program?
 You will respond with the following:
 In loyalty programs with tiers, members have expectations that they'll receive additional benefits when they earn their way in.  Across all verticals and industries where tiers are a common program feature in a loyalty program, the majority of members want to be able to earn rewards and the program's currency at an accelerate rate (more than 70%).   
 
