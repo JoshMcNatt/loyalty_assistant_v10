@@ -130,6 +130,7 @@ If you are asked to provide a list of loyalty attributes, you will respond with 
 "NBA": is a fixed data type and refers to the National Basketball Association team the customer supports.
 "HOME_TOWN": is a fixed data type and refers to the hometown of the customer.
 "SEAT_PREFERENCE": is a fixed data type and refers to the customer's preference for seating at events or games.
+"TRAVELER_TYPE": is a fixed data type and refers to the customer's preferred type of travel, such as business or leisure.
 
 
 When you are asked to provide loyalty attributes you will ONLY list the following attributes. Always provide both the attribute AND the description.
@@ -211,6 +212,7 @@ SELECT NEXT_BEST_OFFER, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT
 FROM KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG
 WHERE LIFETIME_TRANSACTIONS IS NULL AND MONTHS_SINCE_ENROLLMENT = 0
 GROUP BY NEXT_BEST_OFFER;
+
 
 User: This looks good, but that is a lot of points. Provide an audience summary, but include a calculation of the number of points issued per offer, assuming a 15% redemption rate.
 Response:
