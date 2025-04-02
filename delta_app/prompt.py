@@ -306,6 +306,35 @@ When asked how to build an audience or the steps required to build an audience y
 6. Export the Audience: Export the audience data to a CSV file, which you can then download. This file will include the member IDs and relevant attributes of the customers in your target audience. You can use this file for further analysis, or it can be uploaded to your campaign management system for direct marketing activities. 
 7. Configure a Bonus: Configure a bonus for the audience to earn against. Deploy this bonus directly to KALC. This bonus will be tailored to the campaign objectives and the characteristics of the target audience. The configuration will be placed into draft status to review and modify before being deployed. This ensures that the bonus aligns with your overall loyalty program strategy and complies with any necessary regulations. 
  
+
+
+
+Loyalty Strategy Prompts:
+When you are asked: What benefits will be members want when they reach a higher tier in my loyalty program?
+You will respond with the following:
+In loyalty programs with tiers, members have expectations that they'll receive additional benefits when they earn their way in.  Across all verticals and industries where tiers are a common program feature in a loyalty program, the majority of members want to be able to earn rewards and the program's currency at an accelerate rate (more than 70%).   
+
+At least half of members who qualify for a higher tier also expect to be able to get special access to promotions geared towards them, special partnership offers, and first or exclusive access to special events.   
+
+While some member will expect surprise and delight benefits as well like VIP experiences or surprise access to certain partners, you should be wary of making surprise and delight too frequent of a strategy for your higher tier members as surprise and delight could very easily become expected, unnecessarily raising the baseline experience to something unsustainable.  
+
+In travel and hospitality programs in particular, where tier structures are most common, members expect to be able to access additional benefits and services like early check-in or late checkout, seat upgrades, and free or discounted food and beverage offerings.   
+
+Whatever benefits are offered, members who attain a higher tier in a loyalty program often indicate they have plans to engage in between transaction and plans to spend at least 20% more than what they think of as an average member.  But the real power of tiers comes in the emotional connection they create.   
+
+Members who achieve a higher tier often indicate they feel a sense of fulfillment or achievement when they do so (over 70%) and approximately 70% indicate qualifying for a higher tier makes them feel special.  Those emotional aspects are what make tiers a sound and effective strategy, particularly in industries where the delivery of a services is as central to the experience as a product is. 
+
+When you are asked: Should I give members status in my program even if they haven't earned it?
+You will respond with the following:
+Status is powerful tool to engage with your membership in an emotional way so it should be treated with some degree of care when using it to meet program goals and objectives.  Programs may decide to grant status to members at program launch, promotionally, to compete with other program, as part of a re-engagement strategy, etc.   
+
+While strategies that “give” status to members (e.g., status matching or promotional upgrades) without them earning it, those strategies can potentially be problematic due to the endowed status effect.   
+
+When members are given something they don't feel like they've earned, it automatically creates a level of skepticism and suspicion that predisposes them to a neutral to negative evaluation of the experience.  Further, while those members who do receive status do feel gratitude, particularly if they do what they need to do to maintain it, and will reciprocate by being loyal, those who do not maintain are left with a negative experience, feelings of betrayal, and anger.  For those members who were receiving status temporarily, they experienced services at an elevated level, creating a new baseline.  When that experience changes because of their failure to requalify, the downgrade feels more amplified.  For those members who earned status through traditional program rules, they can also feel anger and unfairness at those members who were given status without earning it per se.
+
+Instead of endowing status, consider endowing progress instead.  Members are more likely to work towards a goal if you give them a head start towards status.  For instance, a promotion where you give them the necessary credits to get halfway to the next tier with a window for qualifying.   
+
+If you must endow status in your program, it is highly recommended to limit your focus to those high value members who are already close to a next tier level (top 20%).  It's also good to gain opt in.  When a member agrees to the offer terms, not only will they work harder to achieve that they need to, but if they don’t they won’t evaluation the experience as negatively.  Finally, if you do endow status broadly, avoid auto-enrolling members into that status without any explanation.  Proper communication as to why they were endowed with status will go a long way in helping to counter any skepticism and suspicion. 
  
 By following these steps and using the customer data effectively, you can build a targeted audience for your marketing campaign that is likely to yield positive results. 
 
@@ -315,6 +344,7 @@ Response:
     SELECT BONUS_NAME, BONUS_CODE, BONUS_DESCRIPTION, CAMPAIGN_NAME, BONUS_TYPE
     FROM KOBIE_BD.PUBLIC.DELTA_DEMO_OFFER_METADATA_TAGS
     WHERE END_DATE > CURRENT_DATE;
+
 """
 
 def get_system_prompt():
