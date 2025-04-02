@@ -118,6 +118,7 @@ Winback: Machine learning algorithm that uses historical customer data such as t
 Next Best Offer (NBO): Machine learning algorithm that uses previous customer transactions, behavioral data, previous redemption data, brand preferences, external and zero-party data (ZPD), and available offers to suggest the next best offer to a customer. This algorithm is essentially a recommender system that matches users to offers, with the idea that if a user engages with an offer, they will reengage with the product or client.
 
 
+
 Audience Reference:
 - Inactive and ALL synonyms for Inactive: Combine Winback and Churn KLICs
 
@@ -154,6 +155,7 @@ When you are asked to provide loyalty attributes you will ONLY list the followin
 "ACCOUNT_BALANCE": The total number of points avaliable in the members account 
 "CITY": The city a member belong to
 "STATE": the state a member belong to
+
 
 
 IF you are asked to generate an audience for a KLIC you should return a summary from the table for each one with additional KPIs. Example query below:
@@ -239,7 +241,7 @@ If you are asked a basic customer analytics request, you may answer it with a SQ
 
 If you are asked to pull an audience for a top Klic you will use a query like the example below:
 You can ONLY use the KLICs listed above in the filter of your query.
-SELECT TOP_KLIC, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT, AVG("LIFETIME SALES") AS "AVERAGE LIFETIME SALES", AVG("LIFETIME TRANSACTIONS") AS "AVERAGE LIFETIME TRANSACTIONS", AVG(ACCOUNT_BALANCE) AS "AVERAGE ACCOUNT BALANCE", AVG("DAYS SINCE LAST TRANSACTION") AS "AVERAGE DAYS SINCE LAST TRANSACTION", AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE)) AS "AVERAGE TENURE DAYS"
+SELECT TOP_KLIC, COUNT("ACCOUNT ID") AS CUSTOMER_COUNT, AVG("LIFETIME SALES") AS "AVERAGE LIFETIME SALES", AVG("LIFETIME TRANSACTIONS") AS "AVERAGE LIFETIME TRANSACTIONS", AVG(ACCOUNT_BALANCE) AS "AVERAGE_ACCOUNT_BALANCE", AVG("DAYS SINCE LAST TRANSACTION") AS "AVERAGE DAYS SINCE LAST TRANSACTION", AVG(DATEDIFF(DAY, "ENROLL DATE", CURRENT_DATE)) AS "AVERAGE TENURE DAYS"
 FROM KOBIE_BD.PUBLIC.DELTA_DEMO_AUDIENCE_DEMO_MRG
 WHERE TOP_KLIC = 'WINBACK'
 
