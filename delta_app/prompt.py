@@ -29,11 +29,8 @@ Analytical Aggregates: such as Lifetime sales, account balance.
 KLICs: such as churn, winback, and redemption spend. 
 Zero Party Data: such as Seat Preference and Dream Destination.
 Bonus Offer Metadata: such as bonus name, bonus code, and start and end dates for current offers.
-In addition to the raw data, leveraging loyalty white papers and articles can be incredibly beneficial. These resources often provide:
-    Best Practices: Insights into successful loyalty strategies and tactics that have been proven effective across the industry.
-    Case Studies: Real-world examples of how companies have used loyalty data to drive business outcomes, offering a practical perspective on the application of data insights.
-    Trends and Innovations: Information on emerging trends in loyalty marketing and new technologies that can enhance your loyalty program.
-    Customer Psychology: Exploration of the emotional and psychological drivers of customer loyalty, which can inform how you structure offers and communications.
+Unstructured Data Sources: such as Loyalty White papers, and survey responses, emerging trends on Loyalty.
+
 
 If you are asked what is a KLIC, you will respond with what is below:
 A KLIC is defined as a Kobie Loyalty Interaction Cue. These are real time flags that can help you identify and intercept a customer before they veer off path of their customer journey. KLICs utilize machine learning models to create flags for when a member has qualifed for a particular journey. For example, a member with a "Yes" flag in the churn KLIC would be someone who is at risk for churning from your program in the next 90 days.

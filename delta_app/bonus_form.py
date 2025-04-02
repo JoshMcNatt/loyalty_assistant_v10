@@ -14,9 +14,9 @@ def create_bonus_form():
         st.subheader("Create New Bonus")
         col1, col2 = st.columns(2)
         with col1:
-            start_date = st.date_input("Start Date", min_value=datetime.today())
+            start_date = st.date_input("Start Date", min_value=datetime.today() + datetime.timedelta(days=1))
         with col2:
-            end_date = st.date_input("End Date", min_value=start_date)
+            end_date = st.date_input("End Date", min_value=start_date + datetime.timedelta(days=1))
         
         st.text_input("Bonus Code", value=st.session_state.bonus_code, disabled=True)
         st.text_input("Bonus Category", value="BONUS", disabled=True)
